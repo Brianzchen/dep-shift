@@ -58,7 +58,17 @@ function main(cwd/*: string*/, dep/*: string*/, _from/*: string*/, _to/*: string
     const toStart = lines.findIndex((line) => line.trim().startsWith(`"${to}": {`));
     const toEmpty = lines.findIndex((line) => line.trim().startsWith(`"${to}": {}`));
 
-    if (toEmpty !== -1) {
+    if (toStart === -1) {
+      // If there's no to list
+      lines.splice(
+        fromEnd - 1,
+        0,
+        `${lines[fromStart].substring(0, lines[fromStart].indexOf('"'))}"${to}": {`,
+        ...shiftRows,
+        `${lines[fromStart].substring(0, lines[fromStart].indexOf('"'))}},`,
+      );
+    } else if (toEmpty !== -1) {
+      // If the to list is empty
       lines.splice(
         toEmpty,
         1,

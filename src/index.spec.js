@@ -65,4 +65,27 @@ describe('main', () => {
 }
     `);
   });
+
+  it('adds to list if it does not exist', () => {
+    const pkgJson = `
+{
+  "devDependencies": {
+    "lodash": "4.0.0"
+  }
+}
+    `;
+    fs.writeFileSync(fixturePkg, pkgJson);
+
+    main(fixturePath, 'lodash', '', '');
+
+    expect(fs.readFileSync(fixturePkg, 'utf-8')).toBe(`
+{
+  "dependencies": {
+    "lodash": "4.0.0"
+  },
+  "devDependencies": {
+  }
+}
+    `);
+  });
 });
