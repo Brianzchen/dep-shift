@@ -56,32 +56,45 @@ function main(cwd/*: string*/, dep/*: string*/, _from/*: string*/, _to/*: string
     );
 
     const toStart = lines.findIndex((line) => line.trim().startsWith(`"${to}": {`));
-    const toEnd = lines.findIndex((line, i) => (
-      line.trim().startsWith('}') && i > toStart
-    ));
+    const toEmpty = lines.findIndex((line) => line.trim().startsWith(`"${to}": {}`));
 
-    lines.splice(
-      toStart + 1,
-      0,
-      ...shiftRows,
-    );
+    if (toEmpty !== -1) {
+      lines.splice(
+        toEmpty,
+        1,
+        lines[toEmpty].substring(0, lines[toEmpty].indexOf('}')),
+        ...shiftRows,
+        `${lines[toEmpty].substring(0, lines[toEmpty].indexOf('"'))}${lines[toEmpty].substring(lines[toEmpty].indexOf('}'))}`,
+      );
+    } else {
 
-    const toList = lines.slice(toStart + 1, toEnd + 1);
-    toList.sort();
+      const toEnd = lines.findIndex((line, i) => (
+        line.trim().startsWith('}') && i > toStart
+      ));
 
-    lines.splice(
-      toStart + 1,
-      toList.length,
-      ...toList.map((line, i) => {
-        if (line.endsWith(',') && i === toList.length - 1) {
-          return line.substring(0, line.length - 2);
-        }
-        if (!line.endsWith(',') && i !== toList.length - 1) {
-          return `${line},`;
-        }
-        return line;
-      }),
-    );
+      lines.splice(
+        toStart + 1,
+        0,
+        ...shiftRows,
+      );
+
+      const toList = lines.slice(toStart + 1, toEnd + 1);
+      toList.sort();
+
+      lines.splice(
+        toStart + 1,
+        toList.length,
+        ...toList.map((line, i) => {
+          if (line.endsWith(',') && i === toList.length - 1) {
+            return line.substring(0, line.length - 2);
+          }
+          if (!line.endsWith(',') && i !== toList.length - 1) {
+            return `${line},`;
+          }
+          return line;
+        }),
+      );
+    }
 
     fs.writeFileSync(`${cwd}/package.json`, lines.join('\n'));
   } catch(e) {
