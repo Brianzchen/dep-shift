@@ -2,7 +2,7 @@
   "name": "dep-shift",
   "version": "1.0.1",
   "description": "Move a package.json package to and from dependency/devDependencies",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "git@github.com:Brianzchen/dep-shift.git",
   "author": "Brian Chen <bzchen93@gmail.com>",
   "license": "MIT",
