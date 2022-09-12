@@ -12,4 +12,6 @@ const [
   _to,
 ] = argv._;
 
-main(dep, _from, _to);
+const cwd = process.cwd();
+
+main(cwd, dep, _from, _to);

@@ -1,7 +1,7 @@
 // @flow
 const fs = require('fs');
 
-function main(dep/*: string*/, _from/*: string*/, _to/*: string*/) {
+function main(cwd/*: string*/, dep/*: string*/, _from/*: string*/, _to/*: string*/) {
   const from = _from || 'devDependencies';
   const to = (() => {
     if (from === 'devDependencies') return 'dependencies';
@@ -19,13 +19,13 @@ function main(dep/*: string*/, _from/*: string*/, _to/*: string*/) {
   }
 
   try {
-    const contents = fs.readFileSync('package.json', 'utf-8');
+    const contents = fs.readFileSync(`${cwd}/package.json`, 'utf-8');
     const pkgJson = JSON.parse(contents);
 
     const a = pkgJson[from];
 
     if (!a[dep]) {
-      console.error(`Dependency does not exist in ${from}`);
+      console.error(`Dependency ${dep} does not exist in ${from}`);
       return;
     }
 
@@ -83,7 +83,7 @@ function main(dep/*: string*/, _from/*: string*/, _to/*: string*/) {
       }),
     );
 
-    fs.writeFileSync('package.json', lines.join('\n'));
+    fs.writeFileSync(`${cwd}/package.json`, lines.join('\n'));
   } catch(e) {
     console.log(e);
     console.error('Could not find `package.json` in current dir');
