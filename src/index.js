@@ -61,10 +61,15 @@ function main(cwd/*: string*/, dep/*: string*/, _from/*: string*/, _to/*: string
     if (toStart === -1) {
       // If there's no to list
       lines.splice(
-        fromEnd - 1,
+        fromStart,
         0,
         `${lines[fromStart].substring(0, lines[fromStart].indexOf('"'))}"${to}": {`,
-        ...shiftRows,
+        ...shiftRows.map((o) => {
+          if (o.endsWith(',')) {
+            return o.substring(0, o.length - 1);
+          }
+          return o;
+        }),
         `${lines[fromStart].substring(0, lines[fromStart].indexOf('"'))}},`,
       );
     } else if (toEmpty !== -1) {
